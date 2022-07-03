@@ -1,0 +1,303 @@
+MMdd_HHmmss_SSS-Type: Event
+0703_115644_707-Status: Starting Threaded File Flush with 100ms periods
+0703_115644_737-Status: Started FileLogger Continuing with code...
+0703_115644_805-Status: Starting to Parse XML file...
+0703_115644_867-Status: Starting recursive search in XML File...
+
+	DriveTrain - Swerve Falcon
+		Gyro - Pigeon
+		Name: Pigeon
+		ID: 4
+		Type: PIGEON
+		Inverted: false
+		Offset: 0.0
+
+
+		SwerveModule - LeftFront
+			Motor - Turn Motor
+			Name: Turn Motor
+			ID: 11
+			Type: FALCON
+			Inverted: false
+			Current Limit: 60
+			Gear Ratio: 1.0
+			Ramp Rate: 0.0
+				Name: Default
+				P: 0.2
+				I: 0.0
+				D: 0.1
+
+			Motor - Drive Motor
+			Name: Drive Motor
+			ID: 10
+			Type: FALCON
+			Inverted: false
+			Current Limit: 60
+			Gear Ratio: 1.0
+			Ramp Rate: 0.0
+				Name: Default
+				P: 0.10237
+				I: 0.0
+				D: 0.0
+
+			Encoder - Turn Encoder
+			Name: Turn Encoder
+			ID: 12
+			Type: CTRE_CAN_ABS
+			Inverted: false
+			Offset: -199.2507
+
+0703_115645_027-ERROR: SwerveModuleCreated LeftFront
+
+		SwerveModule - LeftBack
+			Motor - Turn Motor
+			Name: Turn Motor
+			ID: 21
+			Type: FALCON
+			Inverted: false
+			Current Limit: 60
+			Gear Ratio: 1.0
+			Ramp Rate: 0.0
+				Name: Default
+				P: 0.2
+				I: 0.0
+				D: 0.1
+
+			Motor - Drive Motor
+			Name: Drive Motor
+			ID: 20
+			Type: FALCON
+			Inverted: false
+			Current Limit: 60
+			Gear Ratio: 1.0
+			Ramp Rate: 0.0
+				Name: Default
+				P: 0.10237
+				I: 0.0
+				D: 0.0
+
+			Encoder - Turn Encoder
+			Name: Turn Encoder
+			ID: 22
+			Type: CTRE_CAN_ABS
+			Inverted: false
+			Offset: -152.6001
+
+0703_115645_027-ERROR: SwerveModuleCreated LeftBack
+
+		SwerveModule - RightFront
+			Motor - Turn Motor
+			Name: Turn Motor
+			ID: 16
+			Type: FALCON
+			Inverted: false
+			Current Limit: 60
+			Gear Ratio: 1.0
+			Ramp Rate: 0.0
+				Name: Default
+				P: 0.2
+				I: 0.0
+				D: 0.1
+
+			Motor - Drive Motor
+			Name: Drive Motor
+			ID: 15
+			Type: FALCON
+			Inverted: false
+			Current Limit: 60
+			Gear Ratio: 1.0
+			Ramp Rate: 0.0
+				Name: Default
+				P: 0.10237
+				I: 0.0
+				D: 0.0
+
+			Encoder - Turn Encoder
+			Name: Turn Encoder
+			ID: 17
+			Type: CTRE_CAN_ABS
+			Inverted: false
+			Offset: -169.1894
+
+0703_115645_047-ERROR: SwerveModuleCreated RightFront
+
+		SwerveModule - RightBack
+			Motor - Turn Motor
+			Name: Turn Motor
+			ID: 26
+			Type: FALCON
+			Inverted: false
+			Current Limit: 60
+			Gear Ratio: 1.0
+			Ramp Rate: 0.0
+				Name: Default
+				P: 0.2
+				I: 0.0
+				D: 0.1
+
+			Motor - Drive Motor
+			Name: Drive Motor
+			ID: 25
+			Type: FALCON
+			Inverted: false
+			Current Limit: 60
+			Gear Ratio: 1.0
+			Ramp Rate: 0.0
+				Name: Default
+				P: 0.10237
+				I: 0.0
+				D: 0.0
+
+			Encoder - Turn Encoder
+			Name: Turn Encoder
+			ID: 27
+			Type: CTRE_CAN_ABS
+			Inverted: false
+			Offset: -21.6156
+
+0703_115645_047-ERROR: SwerveModuleCreated RightBack
+
+	Intake - 2021 Intake
+		Motor - Intake Motor
+		Name: Intake Motor
+		ID: 30
+		Type: NEO550
+		Inverted: false
+		Current Limit: 20
+		Gear Ratio: 1.0
+		Ramp Rate: 0.0
+
+
+	Spindexer - null
+		Motor - Spindexer Motor
+		Name: Spindexer Motor
+		ID: 35
+		Type: WINDOW
+		Inverted: false
+		Current Limit: 0
+		Gear Ratio: 0.0
+		Ramp Rate: 0.0
+
+
+	Shooter - null
+		Motor - FlywheelMotor1
+		Name: FlywheelMotor1
+		ID: 42
+		Type: FALCON
+		Inverted: false
+		Current Limit: 60
+		Gear Ratio: 1.0
+		Ramp Rate: 2.0
+			Name: Default
+			P: 5.0
+			I: 0.0
+			D: 0.55
+
+		Motor - FlywheelMotor2
+		Name: FlywheelMotor2
+		ID: 43
+		Type: FALCON
+		Inverted: true
+		Current Limit: 60
+		Gear Ratio: 1.0
+		Ramp Rate: 2.0
+
+		Motor - PreRollerMotor
+		Name: PreRollerMotor
+		ID: 44
+		Type: NEO550
+		Inverted: true
+		Current Limit: 35
+		Gear Ratio: 1.0
+		Ramp Rate: 0.0
+
+		Motor - HoodMotor
+		Name: HoodMotor
+		ID: 41
+		Type: NEO550
+		Inverted: false
+		Current Limit: 35
+		Gear Ratio: 1.828571429
+		Ramp Rate: 2.0
+			Name: Default
+			P: 0.03
+			I: 0.0
+			D: 0.0
+
+
+	Settings - null
+
+		DriveTrain-ConversionFactor - null
+
+		DriveTrain-Length - null
+
+		DriveTrain-Width - null
+
+		DriveTrain-MaxSpeed - null
+
+		DriveTrain-MaxAccel - null
+0703_115645_293-Q~SWDSE~ -1.5716 1 -1.5716 1 -1.5716 1 -1.5716 1 21.25 8.25 0 
+0703_115645_294-Q~SWDSE~ -1.9065 1 -1.9065 1 -1.9065 1 -1.9065 1 21.7655 8.2191 0 
+0703_115645_295-Q~SWDSE~ -2.3936 1 -2.3936 1 -2.3936 1 -2.3936 1 21.8127 8.1946 0 
+0703_115645_296-Q~SWDSE~ -2.9334 1 -2.9334 1 -2.9334 1 -2.9334 1 21.8219 8.179 0 
+0703_115645_296-Q~SWDSE~ 2.8059 1 2.8059 1 2.8059 1 2.8059 1 21.821 8.1612 0 
+0703_115645_297-Q~SWDSE~ 2.3301 1 2.3301 1 2.3301 1 2.3301 1 21.8002 8.13 0 
+0703_115645_297-Q~SWDSE~ 1.9668 1 1.9668 1 1.9668 1 1.9668 1 21.4798 7.9526 0 
+0703_115645_298-Q~SWDSE~ 1.8991 1 1.8991 1 1.8991 1 1.8991 1 20.8096 7.7012 0 
+0703_115645_299-Q~SWDSE~ 1.8762 1 1.8762 1 1.8762 1 1.8762 1 20.2119 7.5051 0 
+0703_115645_299-Q~SWDSE~ 1.8606 1 1.8606 1 1.8606 1 1.8606 1 19.5372 7.2978 0 
+0703_115645_300-Q~SWDSE~ 1.8486 1 1.8486 1 1.8486 1 1.8486 1 18.8273 7.0903 0 
+0703_115645_301-Q~SWDSE~ 1.8381 1 1.8381 1 1.8381 1 1.8381 1 18.124 6.8933 0 
+0703_115645_301-Q~SWDSE~ 1.8278 1 1.8278 1 1.8278 1 1.8278 1 17.4649 6.7159 0 
+0703_115645_303-Q~SWDSE~ 1.8164 1 1.8164 1 1.8164 1 1.8164 1 16.8793 6.5649 0 
+0703_115645_304-Q~SWDSE~ 1.794 1 1.794 1 1.794 1 1.794 1 16.1719 6.3942 0 
+0703_115645_304-Q~SWDSE~ 1.7723 1 1.7723 1 1.7723 1 1.7723 1 15.5 6.25 0 
+0703_115645_305-Q~SWDSE~ 1.8115 1 1.8115 1 1.8115 1 1.8115 1 14.8725 6.1135 0 
+0703_115645_305-Q~SWDSE~ 1.8781 1 1.8781 1 1.8781 1 1.8781 1 14.1679 5.918 0 
+0703_115645_306-Q~SWDSE~ 1.9349 1 1.9349 1 1.9349 1 1.9349 1 13.3417 5.6308 0 
+0703_115645_306-Q~SWDSE~ 1.9619 1 1.9619 1 1.9619 1 1.9619 1 12.6948 5.375 0 
+0703_115645_307-Q~SWDSE~ 1.9772 1 1.9772 1 1.9772 1 1.9772 1 12.185 5.1605 0 
+0703_115645_308-Q~SWDSE~ 1.9884 1 1.9884 1 1.9884 1 1.9884 1 11.645 4.9247 0 
+0703_115645_309-Q~SWDSE~ 1.9958 1 1.9958 1 1.9958 1 1.9958 1 11.0786 4.671 0 
+0703_115645_310-Q~SWDSE~ 1.9997 1 1.9997 1 1.9997 1 1.9997 1 10.4905 4.4034 0 
+0703_115645_310-Q~SWDSE~ 2.0002 1 2.0002 1 2.0002 1 2.0002 1 9.8865 4.1268 0 
+0703_115645_311-Q~SWDSE~ 1.9974 1 1.9974 1 1.9974 1 1.9974 1 9.2728 3.8464 0 
+0703_115645_311-Q~SWDSE~ 1.9911 1 1.9911 1 1.9911 1 1.9911 1 8.6561 3.568 0 
+0703_115645_312-Q~SWDSE~ 1.9808 1 1.9808 1 1.9808 1 1.9808 1 8.0437 3.2973 0 
+0703_115645_313-Q~SWDSE~ 1.966 1 1.966 1 1.966 1 1.966 1 7.4427 3.0405 0 
+0703_115645_313-Q~SWDSE~ 1.9457 1 1.9457 1 1.9457 1 1.9457 1 6.8605 2.8032 0 
+0703_115645_314-Q~SWDSE~ 1.9183 1 1.9183 1 1.9183 1 1.9183 1 6.304 2.5914 0 
+0703_115645_314-Q~SWDSE~ 1.8816 1 1.8816 1 1.8816 1 1.8816 1 5.78 2.4105 0 
+0703_115645_315-Q~SWDSE~ 1.7876 1 1.7876 1 1.7876 1 1.7876 1 5.0133 2.1946 0 
+0703_115645_315-Q~SWDSE~ 1.5807 1 1.5807 1 1.5807 1 1.5807 1 4.2416 2.0836 0 
+0703_115645_315-Q~SWDSE~ 1.1619 1 1.1619 1 1.1619 1 1.1619 1 3.6842 2.1619 0 
+0703_115645_316-Q~SWDSE~ 0.5327 1 0.5327 1 0.5327 1 0.5327 1 3.3467 2.4318 0 
+0703_115645_316-Q~SWDSE~ 0.0837 1 0.0837 1 0.0837 1 0.0837 1 3.2085 2.8738 0 
+0703_115645_317-Q~SWDSE~ -0.0961 1 -0.0961 1 -0.0961 1 -0.0961 1 3.2171 3.4417 0 
+0703_115645_317-Q~SWDSE~ -0.0699 1 -0.0699 1 -0.0699 1 -0.0699 1 3.2952 4.196 0 
+0703_115645_318-Q~SWDSE~ 0.0259 1 0.0259 1 0.0259 1 0.0259 1 3.3143 4.8862 0 
+0703_115645_319-Q~SWDSE~ 0.0874 1 0.0874 1 0.0874 1 0.0874 1 3.2819 5.474 0 
+0703_115645_321-Q~SWDSE~ 0.1283 1 0.1283 1 0.1283 1 0.1283 1 3.2102 6.1389 0 
+0703_115645_321-Q~SWDSE~ 0.149 1 0.149 1 0.149 1 0.149 1 3.1077 6.8708 0 
+0703_115645_321-Q~SWDSE~ 0.1511 1 0.1511 1 0.1511 1 0.1511 1 2.9889 7.6496 0 
+0703_115645_321-Q~SWDSE~ 0.1343 1 0.1343 1 0.1343 1 0.1343 1 2.8719 8.4486 0 
+0703_115645_321-Q~SWDSE~ 0.0957 1 0.0957 1 0.0957 1 0.0957 1 2.7773 9.2369 0 
+0703_115645_321-Q~SWDSE~ 0.0284 1 0.0284 1 0.0284 1 0.0284 1 2.7254 9.9827 0 
+0703_115645_321-Q~SWDSE~ -0.0808 1 -0.0808 1 -0.0808 1 -0.0808 1 2.7349 10.6563 0 
+0703_115645_321-Q~SWDSE~ -0.2527 1 -0.2527 1 -0.2527 1 -0.2527 1 2.8207 11.2333 0 
+0703_115645_321-Q~SWDSE~ -0.7251 1 -0.7251 1 -0.7251 1 -0.7251 1 3.1437 11.9264 0 
+0703_115645_321-Q~SWDSE~ -1.253 1 -1.253 1 -1.253 1 -1.253 1 3.8312 12.3794 0 
+0703_115645_321-Q~SWDSE~ -1.307 1 -1.307 1 -1.307 1 -1.307 1 4.6912 12.6151 0 
+0703_115645_321-Q~SWDSE~ -1.2721 1 -1.2721 1 -1.2721 1 -1.2721 1 5.455 12.8339 0 
+0703_115645_321-Q~SWDSE~ -1.2519 1 -1.2519 1 -1.2519 1 -1.2519 1 5.9698 12.9977 0 
+0703_115645_321-Q~SWDSE~ -1.2379 1 -1.2379 1 -1.2379 1 -1.2379 1 6.5218 13.1842 0 
+0703_115645_321-Q~SWDSE~ -1.2313 1 -1.2313 1 -1.2313 1 -1.2313 1 7.1078 13.3891 0 
+0703_115645_321-Q~SWDSE~ -1.2324 1 -1.2324 1 -1.2324 1 -1.2324 1 7.7208 13.6057 0 
+0703_115645_321-Q~SWDSE~ -1.2413 1 -1.2413 1 -1.2413 1 -1.2413 1 8.351 13.8252 0 
+0703_115645_321-Q~SWDSE~ -1.2584 1 -1.2584 1 -1.2584 1 -1.2584 1 8.9869 14.0378 0 
+0703_115645_321-Q~SWDSE~ -1.2844 1 -1.2844 1 -1.2844 1 -1.2844 1 9.6168 14.2339 0 
+0703_115645_321-Q~SWDSE~ -1.32 1 -1.32 1 -1.32 1 -1.32 1 10.2294 14.4047 0 
+0703_115645_331-Q~SWDSE~ -1.3656 1 -1.3656 1 -1.3656 1 -1.3656 1 10.8154 14.5431 0 
+0703_115645_331-Q~SWDSE~ -1.4205 1 -1.4205 1 -1.4205 1 -1.4205 1 11.3682 14.6449 0 
+0703_115645_331-Q~SWDSE~ -1.4916 1 -1.4916 1 -1.4916 1 -1.4916 1 11.9477 14.7153 0 
+0703_115645_331-Q~SWDSE~ -1.5703 1 -1.5703 1 -1.5703 1 -1.5703 1 12.887 14.7499 0 
