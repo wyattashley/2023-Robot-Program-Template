@@ -8,6 +8,7 @@ import frc.robot.functions.splines.QuinticSpline;
 import frc.robot.functions.splines.VelocityGenerator;
 import frc.robot.library.units.Distance2d;
 import frc.robot.library.units.Speed2d;
+import frc.robot.library.units.Vector2d;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -17,63 +18,8 @@ import java.util.List;
 
 public class PurePursuitGenerator {
 
-    private List<Translation2d> pointList;
+    public List<Translation2d> pointList;
     private final Distance2d lookAheadDistance;
-
-    public static void main(String... args) {
-
-        List<Translation2d> list = new ArrayList<>();
-        list.add(new Translation2d(0,0));
-        list.add(new Translation2d(5, 5));
-        list.add(new Translation2d(10, 5));
-        list.add(new Translation2d(15, 10));
-//        list.add(new Translation2d(10, 20));
-//        list.add(new Translation2d(5, 10));
-//        list.add(new Translation2d(0, 15));
-
-        QuinticSpline spline = new QuinticSpline(list, 0.8, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0));
-
-        List<PoseWithCurvature> tmp = spline.getSplinePoints();
-        for(PoseWithCurvature pose : tmp) {
-            BigDecimal x = BigDecimal.valueOf(pose.poseMeters.getX());
-            BigDecimal y = BigDecimal.valueOf(pose.poseMeters.getY());
-            System.out.print("(" + x.toPlainString() + ", " + y.toPlainString() + "), ");
-        }
-
-        System.out.println();
-        VelocityGenerator velocityGenerator = new VelocityGenerator(tmp, Speed2d.fromFeetPerSecond(1), Speed2d.fromFeetPerSecond(.25), 1);
-        List<Speed2d> tmp2 = velocityGenerator.getSpeeds();
-        for(int i = 0; i < tmp2.size(); i++) {
-            BigDecimal r = BigDecimal.valueOf(tmp2.get(i).getValue());
-//            BigDecimal r = BigDecimal.valueOf(100 - (Math.abs(tmp.get(i).curvatureRadPerMeter / Math.PI) * 100));
-            BigDecimal x = BigDecimal.valueOf(tmp.get(i).poseMeters.getX());
-            System.out.print("(" + x.toPlainString() + ", " + r.toPlainString() + "), ");
-        }
-
-//        PurePursuitGenerator generator = new PurePursuitGenerator(list, Distance2d.fromUnit(Distance2d.DistanceUnits.INCH, 1.5));
-//        PurePursuitGenerator generator = new PurePursuitGenerator(Distance2d.fromUnit(Distance2d.DistanceUnits.INCH, 1.5), spline.getSplinePoints());
-
-//        generator.injectPoints(Distance2d.fromUnit(Distance2d.DistanceUnits.INCH, .25));
-//        generator.smoothPoints();
-
-//        double xCurrent = 0;
-//        double yCurrent = 0;
-//
-//        for(int t = 0; t < generator.pointList.size(); t++) {
-//            Translation2d goalPoint = generator.calculateGoalPose(new Translation2d(xCurrent, yCurrent)).getTranslation();
-//
-//            Vector2d vector = new Vector2d(Distance2d.fromUnit( Distance2d.DistanceUnits.INCH,goalPoint.getX() - xCurrent), Distance2d.fromUnit(Distance2d.DistanceUnits.INCH, goalPoint.getY() - yCurrent));
-//
-//            double distance = Math.sqrt(Math.pow(goalPoint.getX() - xCurrent, 2) + Math.pow(goalPoint.getY() - yCurrent, 2));
-//            double driveLength = vector.magnitude();
-//            vector = vector.normalize();
-//
-//            xCurrent += vector.getX().getValue(Distance2d.DistanceUnits.INCH);// * driveLength;
-//            yCurrent += vector.getY().getValue(Distance2d.DistanceUnits.INCH);// * driveLength;
-//
-//            System.out.print("(" + xCurrent + ", " + yCurrent + "), ");
-//        }
-    }
 
     public PurePursuitGenerator(List<Translation2d> points, Distance2d _lookAheadDistance) {
         pointList = points;
