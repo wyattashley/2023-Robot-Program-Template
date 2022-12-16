@@ -1,5 +1,6 @@
 package frc.robot.functions.splines;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.spline.PoseWithCurvature;
 import frc.robot.library.units.Speed2d;
 

@@ -27,6 +27,7 @@ public final class Constants {
 
     public enum StepState {
         STATE_INIT ("STATE_INIT"),
+        STATE_PAUSED ("STATE_PAUSED"),
         STATE_RUNNING ("STATE_RUNNING"),
         STATE_FINISH ("STATE_FINISHED"),
         STATE_NOT_STARTED ("STATE_NOT_STARTED");

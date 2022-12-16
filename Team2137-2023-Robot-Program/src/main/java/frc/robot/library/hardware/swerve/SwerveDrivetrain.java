@@ -2,6 +2,7 @@ package frc.robot.library.hardware.swerve;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.functions.io.FileLogger;
 import frc.robot.functions.io.xmlreader.Entity;
@@ -127,10 +128,8 @@ public class SwerveDrivetrain extends EntityGroup implements DriveTrain {
             }
         }
 
-        if(max > 1) {
-            for(double[] moduleState : speeds) {
+        for(double[] moduleState : speeds) {
                 moduleState[0] /= max;
-            }
         }
 
         if (controlType == Constants.DriveControlType.VELOCITY) {
@@ -235,6 +234,10 @@ public class SwerveDrivetrain extends EntityGroup implements DriveTrain {
     }
 
     public void logModuleStates(SwerveModuleState[] states) {
+        logModuleStates(states, new Transform2d(currentRobotPosition, getAngle()));
+    }
+
+    public void logModuleStates(SwerveModuleState[] states, Transform2d robot) {
         StringBuilder builder = new StringBuilder();
         DecimalFormat formater = new DecimalFormat();
         formater.setMaximumFractionDigits(4);
@@ -248,9 +251,9 @@ public class SwerveDrivetrain extends EntityGroup implements DriveTrain {
         builder.append(formater.format(rightFrontModule.getRawDrivePower())).append(" ");
         builder.append(formater.format(rightBackModule.getModuleAngle().getRadians())).append(" ");
         builder.append(formater.format(rightBackModule.getRawDrivePower())).append(" ");
-        builder.append(formater.format(currentRobotPosition.getX())).append(" ");
-        builder.append(formater.format(currentRobotPosition.getY())).append(" ");
-        builder.append(formater.format(getAngle().getRadians())).append(" ");
+        builder.append(formater.format(robot.getX())).append(" ");
+        builder.append(formater.format(robot.getY())).append(" ");
+        builder.append(formater.format(robot.getRotation().getRadians())).append(" ");
 
         logger.writeLine(builder.toString());
     }

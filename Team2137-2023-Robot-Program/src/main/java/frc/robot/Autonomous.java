@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.functions.io.FileLogger;
 import frc.robot.functions.io.FileLogger.EventType;
@@ -7,9 +9,11 @@ import frc.robot.functions.io.xmlreader.EntityGroup;
 import frc.robot.functions.io.xmlreader.XMLSettingReader;
 import frc.robot.functions.io.xmlreader.data.Step;
 import frc.robot.functions.io.xmlreader.XMLStepReader;
+import frc.robot.functions.splines.QuinticSpline;
 import frc.robot.library.*;
 import frc.robot.library.Constants.StepState;
 import frc.robot.library.Constants.RobotState;
+import frc.robot.library.PurePursuit.Waypoint;
 import frc.robot.library.hardware.DriveTrain;
 import frc.robot.library.hardware.swerve.SwerveDrivetrain;
 import frc.robot.library.units.Distance2d;
@@ -40,6 +44,15 @@ public class Autonomous implements OpMode {
     private List<Step> mStepList;
     private int mintCurrentStep = 0;
     private final List<Step> mCurrentActionSteps = new ArrayList<>();
+
+    //region Command Variables
+
+    //region Drive Command Variables
+    private boolean mDriveCommandFirstCallFlag = false;
+    private List<Pose2d> mDriveWaypointList;
+    //endregion
+
+    //endregion
 
     //region Main Autonomous Opmode Functions
     @Override
@@ -103,10 +116,35 @@ public class Autonomous implements OpMode {
             case "SetSwerveVelocity":
                 setSwerveDrivetrainVelocity(step);
                 break;
+            case "Drive":
+                drive(step);
         }
     }
     //endregion
 
+    //region Generic Drive Command
+    public void drive(Step step) {
+        switch(step.getStepState()) {
+            case STATE_INIT:
+                 if(!mDriveCommandFirstCallFlag) {
+                     mDriveCommandFirstCallFlag = true;
+
+                     for(Step tmpStep : mStepList) {
+                         if(tmpStep.getCommand().equalsIgnoreCase("drive")) {
+                             mDriveWaypointList.add(tmpStep.);
+                         }
+                     }
+
+                     QuinticSpline quinticSpline = new QuinticSpline()
+
+                 } else {
+
+                 }
+                break;
+            case STA
+        }
+    }
+    //endregion
 
     //region Swerve Autonomous Commands
     /**

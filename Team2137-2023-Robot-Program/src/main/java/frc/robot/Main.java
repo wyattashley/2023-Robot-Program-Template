@@ -5,7 +5,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.spline.PoseWithCurvature;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -27,6 +29,7 @@ import frc.robot.library.units.Time2d;
 import frc.robot.library.units.Vector2d;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -106,37 +109,63 @@ public final class Main
         VelocityGenerator velocityGenerator = new VelocityGenerator(tmp, Speed2d.fromFeetPerSecond(1), Speed2d.fromFeetPerSecond(.25), 1);
         List<Speed2d> tmp2 = velocityGenerator.getSpeeds();
 
-        PurePursuitGenerator generator = new PurePursuitGenerator(Distance2d.fromUnit(Distance2d.DistanceUnits.INCH, 1.5), tmp);
+        PurePursuitGenerator generator = new PurePursuitGenerator(Distance2d.fromUnit(Distance2d.DistanceUnits.FEET, 1.5), tmp);
 
-        double currentX = 0;
-        double currentY = 0;
+        double currentX = waypoints.get(0).getX();
+        double currentY = waypoints.get(0).getY();
 
-        for(int i = 0; i < tmp.size() - 1; i += 8) {
-            drivetrain.currentRobotPosition = new Translation2d(tmp.get(i).poseMeters.getX(), tmp.get(i).poseMeters.getY());
-//            drivetrain.currentRobotPosition = new Translation2d(currentX, currentY);
+//        for(int i = 0; i < 200; i++) {
+        int i = 0;
+        while (true) {
+//            drivetrain.currentRobotPosition = new Translation2d(tmp.get(i).poseMeters.getX(), tmp.get(i).poseMeters.getY());
+            drivetrain.currentRobotPosition = new Translation2d(currentX, currentY);
 
 //            double dy = tmp.get(i + 1).poseMeters.getY() - tmp.get(i).poseMeters.getY();
 //            double dx = tmp.get(i + 1).poseMeters.getX() - tmp.get(i).poseMeters.getX();
 //            double a = Math.atan2(dy, dx);
 //            SwerveModuleState[] states = drivetrain.calculateSwerveMotorSpeeds(Math.cos(a), Math.sin(a), 0, 3, 3, Constants.DriveControlType.RAW);
 
+            Map.Entry<Transform2d, Map.Entry<Translation2d, Translation2d>> generatedPoseInfo = generator.calculateGoalPose(new Translation2d(currentX, currentY));
+            Transform2d transform2d = generatedPoseInfo.getKey();
 
-            Translation2d goalPoint = generator.calculateGoalPose(new Translation2d(currentX, currentY)).getTranslation();
+            if(currentX > 17 && currentY > 14.4)
+                return;
 
-            Vector2d vector = new Vector2d(Distance2d.fromUnit( Distance2d.DistanceUnits.INCH,goalPoint.getX() - currentX), Distance2d.fromUnit(Distance2d.DistanceUnits.INCH, goalPoint.getY() - currentY));
+            Translation2d goalPoint = transform2d.getTranslation();
 
-            currentX += vector.getX().getValue(Distance2d.DistanceUnits.FEET);
-            currentY += vector.getY().getValue(Distance2d.DistanceUnits.FEET);
+            Vector2d vector = new Vector2d(Distance2d.fromUnit( Distance2d.DistanceUnits.FEET,goalPoint.getX() - currentX), Distance2d.fromUnit(Distance2d.DistanceUnits.FEET, goalPoint.getY() - currentY));
 
             vector = vector.normalize();
+
+            currentX += vector.getX().getValue(Distance2d.DistanceUnits.FEET) * .5;
+            currentY += vector.getY().getValue(Distance2d.DistanceUnits.FEET) * .5;
 
             SwerveModuleState[] states = drivetrain.calculateSwerveMotorSpeeds(vector.getX().getValue(Distance2d.DistanceUnits.FEET), vector.getY().getValue(Distance2d.DistanceUnits.FEET), 0, 3, 3, Constants.DriveControlType.RAW);
 
             drivetrain.setSwerveModuleStates(states);
             drivetrain.logModuleStates(states);
+
+            StringBuilder builder = new StringBuilder();
+            DecimalFormat formater = new DecimalFormat();
+            formater.setMaximumFractionDigits(4);
+
+            builder.append("Q~RPGA~ ");
+            builder.append(formater.format(currentX)).append(" ");
+            builder.append(formater.format(currentY)).append(" ");
+
+            fileLogger.writeLine(builder.toString());
+
+            builder = new StringBuilder();
+
+            builder.append("Q~RPGA~ ");
+            builder.append(formater.format(generatedPoseInfo.getValue().getValue().getX())).append(" ");
+            builder.append(formater.format(generatedPoseInfo.getValue().getValue().getY())).append(" ");
+
+            fileLogger.writeLine(builder.toString());
+
 //            fileLogger.flush();
             try {
-                Thread.sleep(500);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -153,9 +182,9 @@ public final class Main
 //            Translation2d goalPoint = generator.calculateGoalPose(new Translation2d(xCurrent, yCurrent)).getTranslation();
 //
 //            Vector2d vector = new Vector2d(Distance2d.fromUnit( Distance2d.DistanceUnits.INCH,goalPoint.getX() - xCurrent), Distance2d.fromUnit(Distance2d.DistanceUnits.INCH, goalPoint.getY() - yCurrent));
-//
-////            double distance = Math.sqrt(Math.pow(goalPoint.getX() - xCurrent, 2) + Math.pow(goalPoint.getY() - yCurrent, 2));
-////            double driveLength = vector.magnitude();
+
+//            double distance = Math.sqrt(Math.pow(goalPoint.getX() - xCurrent, 2) + Math.pow(goalPoint.getY() - yCurrent, 2));
+//            double driveLength = vector.magnitude();
 //            vector = vector.normalize();
 //
 //            xCurrent += vector.getX().getValue(Distance2d.DistanceUnits.INCH);// * driveLength;
