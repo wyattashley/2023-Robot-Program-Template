@@ -50,16 +50,37 @@ public final class Main
     */
     public static void main(String... args)
     {
-        fileLogger = new FileLogger(10,Constants.RobotState.MAIN, "C:\\FRC Code\\2023\\2023-Robot-Program-Template\\Team2137-2023-Robot-Program\\FileLogs\\");
+        boolean isSimulation = true;
+
+        if(Constants.StandardFileAndDirectoryLocations.GenerateAllStandardDirectories(isSimulation)) { //@TODO replace with driver station value
+            System.out.println("Created new Standard Directories for FRC Robot");
+        } else {
+            System.out.println("Using existing Standard Directories");
+        }
+
+        fileLogger = new FileLogger(10, Constants.RobotState.MAIN, Constants.StandardFileAndDirectoryLocations.GenericFileLoggerDir.getFileLocation(isSimulation), isSimulation);
         fileLogger.writeEvent(0, FileLogger.EventType.Status, "Started FileLogger Continuing with code...");
 
+        fileLogger.writeEvent(0, FileLogger.EventType.Status, "Opening Settings XML File...");
+        XMLSettingReader settingReader = new XMLSettingReader(Constants.StandardFileAndDirectoryLocations.GenericSettings.getFileLocation(isSimulation), true, fileLogger);
+        fileLogger.writeEvent(0, FileLogger.EventType.Status, "Opening Step XML File...");
+        XMLStepReader stepReader = new XMLStepReader(Constants.StandardFileAndDirectoryLocations.GenericStepList.getFileLocation(isSimulation), fileLogger);
+
+        stepReader.getSteps().clear();
+        stepReader.addStep(new Step());
+        stepReader.addStep(new Step());
+        stepReader.addStep(new Step());
+        stepReader.addStep(new Step());
+
+        stepReader.writeSteps();
+        /*
         testXMLFunction("C:\\FRC Code\\2023\\2023-Robot-Program-Template\\Team2137-2023-Robot-Program\\XMLExamples\\Settings.xml");
 //        while(true) {
 //            for(int i = 0; i < Robot.subSystemCallList.size(); i++){
 //                Robot.subSystemCallList.get(i).periodic();
 //            }
 //        }
-
+*/
         fileLogger.close();
         //return;
         //RobotBase.startRobot(Robot::new);
@@ -75,7 +96,7 @@ public final class Main
 
         SwerveDrivetrain swerveDrivetrain = (SwerveDrivetrain) robotHardware.getEntityGroupByType("DriveTrain");
 
-        XMLStepReader stepReader = new XMLStepReader("C:\\FRC Code\\2023\\2023-Robot-Program-Template\\Team2137-2023-Robot-Program\\XMLExamples\\", "Team2137Red1.xml");
+        XMLStepReader stepReader = new XMLStepReader("C:\\FRC Code\\2023\\2023-Robot-Program-Template\\Team2137-2023-Robot-Program\\XMLExamples\\Team2137Red1.xml", fileLogger);
 //        SwerveModuleState[] states = swerveDrivetrain.calculateSwerveMotorSpeeds(0, 0, 0, 3, 3, Constants.DriveControlType.RAW);
 //
 //        swerveDrivetrain.setSwerveModuleStates(states);

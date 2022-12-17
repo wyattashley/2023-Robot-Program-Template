@@ -3,6 +3,8 @@ package frc.robot.functions.io.xmlreader.data;
 import edu.wpi.first.math.Pair;
 import frc.robot.library.Constants;
 import frc.robot.library.units.Time2d;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.util.HashMap;
 
@@ -11,7 +13,7 @@ public class Step {
         COMMAND ("COMMAND"),
         TIMEOUT ("TIMEOUT"),
         SPEED ("SPEED"),
-        DISTANCE ("DISTANCE"),
+        //DISTANCE ("DISTANCE"),
         XDISTANCE ("XDISTANCE"),
         YDISTANCE ("YDISTANCE"),
         PARALLEL ("PARALLEL");
@@ -130,5 +132,41 @@ public class Step {
 
     public boolean hasTimeElapsed(Time2d time) {
         return (System.currentTimeMillis() - startTime) >= time.getValue(Time2d.TimeUnits.MILLISECONDS);
+    }
+
+    private void propagateBlankValues() {
+        for(StepValues a : StepValues.values()) {
+            this.values.putIfAbsent(a.toString(), "0");
+        }
+
+        for(int i = 1; i < 8; i++) {
+            this.values.putIfAbsent("PARM" + i, "0");
+        }
+    }
+
+    public Element getXMLFileElement(Document doc) {
+            propagateBlankValues();
+            Element xmlFileElement = doc.createElement("Step");
+
+            for(StepValues a : StepValues.values()) {
+                Element tmp = doc.createElement(a.toString().toLowerCase());
+                tmp.setTextContent(values.get(a.toString()));
+                xmlFileElement.appendChild(tmp);
+            }
+
+            for(int i = 1; i < 8; i++) {
+                Element tmp = doc.createElement("parm" + i);
+                tmp.setTextContent(values.get("PARM" + i));
+                xmlFileElement.appendChild(tmp);
+            }
+
+//
+//            values.forEach((a, b) -> {
+//                Element tmp = doc.createElement(a);
+//                tmp.setTextContent(b);
+//                xmlFileElement.appendChild(tmp);
+//            });
+
+            return xmlFileElement;
     }
 }

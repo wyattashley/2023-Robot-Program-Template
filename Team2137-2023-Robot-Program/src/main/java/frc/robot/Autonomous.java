@@ -65,7 +65,7 @@ public class Autonomous implements OpMode {
 
         this.mRobotSubsystem = mSettingReader.getRobot();
 
-        this.mStepReader = new XMLStepReader(strStepFilePath, strStepFileName);
+        this.mStepReader = new XMLStepReader(strStepFilePath + strStepFileName, logger);
         this.mStepList = this.mStepReader.getSteps();
 
         this.mDrivetrain = (SwerveDrivetrain) mRobotSubsystem.getEntityGroupByType("DriveTrain");
@@ -124,25 +124,25 @@ public class Autonomous implements OpMode {
 
     //region Generic Drive Command
     public void drive(Step step) {
-        switch(step.getStepState()) {
-            case STATE_INIT:
-                 if(!mDriveCommandFirstCallFlag) {
-                     mDriveCommandFirstCallFlag = true;
-
-                     for(Step tmpStep : mStepList) {
-                         if(tmpStep.getCommand().equalsIgnoreCase("drive")) {
-                             mDriveWaypointList.add(tmpStep.);
-                         }
-                     }
-
-                     QuinticSpline quinticSpline = new QuinticSpline()
-
-                 } else {
-
-                 }
-                break;
-            case STA
-        }
+//        switch(step.getStepState()) {
+//            case STATE_INIT:
+//                 if(!mDriveCommandFirstCallFlag) {
+//                     mDriveCommandFirstCallFlag = true;
+//
+//                     for(Step tmpStep : mStepList) {
+//                         if(tmpStep.getCommand().equalsIgnoreCase("drive")) {
+//                             mDriveWaypointList.add(tmpStep.);
+//                         }
+//                     }
+//
+//                     QuinticSpline quinticSpline = new QuinticSpline()
+//
+//                 } else {
+//
+//                 }
+//                break;
+//            case STA
+//        }
     }
     //endregion
 

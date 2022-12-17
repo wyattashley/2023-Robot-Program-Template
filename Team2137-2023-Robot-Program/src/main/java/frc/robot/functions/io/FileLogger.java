@@ -59,8 +59,9 @@ public class FileLogger {
      * @param _debug - Debug choice
      * @param robotState - Current robot state (Auto, Tele)
      */
-    public FileLogger(int _debug, RobotState robotState, String directory){
+    public FileLogger(int _debug, RobotState robotState, String directory, boolean _copyToSystemStream){
         this.debug = _debug;
+        copyToSystemStream = _copyToSystemStream;
 
         //startThreadedNetworkTable(100);
 

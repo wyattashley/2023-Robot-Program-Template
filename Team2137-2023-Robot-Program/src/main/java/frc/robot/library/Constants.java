@@ -6,7 +6,81 @@ import frc.robot.functions.io.xmlreader.objects.Motor;
 import frc.robot.library.units.Distance2d;
 import org.ejml.simple.SimpleMatrix;
 
+import java.io.File;
+
 public final class Constants {
+
+    public enum StandardFileAndDirectoryLocations {
+        GenericSettings("Settings.xml"),
+        GenericStepList("Steps.xml"),
+        GenericFileLoggerDir("\\FileLogs\\"),
+
+        //region 2022 XML File Locations
+        TEAM2137RED1_2022("Team2137_2022_Red1_Steps.xml"),
+        TEAM2137RED2_2022("Team2137_2022_Red2_Steps.xml"),
+        TEAM2137RED3_2022("Team2137_2022_Red3_Steps.xml"),
+        TEAM2137BLUE1_2022("Team2137_2022_Blue1_Steps.xml"),
+        TEAM2137BLUE2_2022("Team2137_2022_Blue2_Steps.xml"),
+        TEAM2137BLUE3_2022("Team2137_2022_Blue3_Steps.xml"),
+        TEAM2137Test_2022("Team2137_2022_Test_Steps.xml"),
+        TEAM2137Settings_2022("Team2137_2022_Settings.xml")
+        //endregion
+        ;
+
+        private final String loc;
+
+        //Uses current users home location (for windows C:/Users/Wyatt)
+        public static final String xmlDesktopFileLocation = System.getProperty("user.home") + "\\FRC_ROBOT_FILES\\";
+        public static final String xmlRoboRioFileLocation = "";
+
+        StandardFileAndDirectoryLocations(String location) {
+            loc = location;
+        }
+
+        /**
+         * @param simulation - Boolean whether the robot is running on desktop (if true uses {@see xmlDesktopFileLocation} else {@see xmlRoboRioFileLocation})
+         * @return - Full File Location
+         */
+        public String getFileLocation(boolean simulation) {
+            if (simulation) {
+                return xmlDesktopFileLocation + loc;
+            } else {
+                return xmlRoboRioFileLocation + loc;
+            }
+        }
+
+        /**
+         * Creates the new xml standard directories {@see XMLSettingReader}
+         * @param simulation - Whether the robot is on desktop or roborio
+         * @return - True if directory is created and false for already existing
+         */
+        public static boolean GenerateBaseXMLDirectories(boolean simulation) {
+            File xmlLocation = simulation ? new File(xmlDesktopFileLocation) : new File(xmlRoboRioFileLocation);
+
+            return xmlLocation.mkdir();
+        }
+
+        /**
+         * Creates the new fileLogger standard directories {@see FileLogger}
+         * @param simulation - Whether the robot is on desktop or roborio
+         * @return - True if directory is created and false for already existing
+         */
+        public static boolean GenerateBaseFileLoggerDirectories(boolean simulation) {
+            File fileLogLocation = new File(GenericFileLoggerDir.getFileLocation(simulation));
+
+            return fileLogLocation.mkdir();
+        }
+
+        /**
+         * Creates all standard directories for {@see GenerateBaseXMLDirectories} & {@see GenerateBaseFileLoggerDirectories}
+         * @param simulation - Whether code is running on desktop or roborio
+         * @return - True if any directories were created
+         */
+        public static boolean GenerateAllStandardDirectories(boolean simulation) {
+            return GenerateBaseXMLDirectories(simulation) | GenerateBaseFileLoggerDirectories(simulation);
+        }
+    }
+
     public enum RobotState {
         AUTONOMOUS("Auto"),
         DISABLED("Disa"),

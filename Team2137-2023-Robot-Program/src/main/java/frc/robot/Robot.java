@@ -18,6 +18,8 @@ import java.util.List;
 
 public class Robot extends TimedRobot {
 
+  public boolean runCode = false;
+
   private static OpMode autonomousClass;
   private static OpMode teleopClass;
   private static OpMode testClass;
@@ -56,64 +58,80 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    callEndFunction();
-    clearOpModes();
+    if(runCode) {
+      callEndFunction();
+      clearOpModes();
 
-    lastRobotState = Constants.RobotState.DISABLED;
+      lastRobotState = Constants.RobotState.DISABLED;
 
-    disabledClass = new Disabled();
-    disabledClass.init(xmlSettingReader, fileLogger);
+      disabledClass = new Disabled();
+      disabledClass.init(xmlSettingReader, fileLogger);
+    }
   }
 
   @Override
-  public void disabledPeriodic() {callPeriodicFunction();}
+  public void disabledPeriodic() {
+    if(runCode) callPeriodicFunction();
+  }
 
   @Override
   public void autonomousInit() {
-    callEndFunction();
-    clearOpModes();
+    if(runCode) {
+      callEndFunction();
+      clearOpModes();
 
-    lastRobotState = Constants.RobotState.AUTONOMOUS;
+      lastRobotState = Constants.RobotState.AUTONOMOUS;
 
-    autonomousClass = new Autonomous();
-    autonomousClass.init(xmlSettingReader, fileLogger);
+      autonomousClass = new Autonomous();
+      autonomousClass.init(xmlSettingReader, fileLogger);
+    }
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {callPeriodicFunction();}
+  public void autonomousPeriodic() {
+    if(runCode) callPeriodicFunction();
+  }
 
   @Override
   public void teleopInit() {
-    callEndFunction();
-    clearOpModes();
+    if(runCode) {
+      callEndFunction();
+      clearOpModes();
 
-    lastRobotState = Constants.RobotState.TELEOP;
+      lastRobotState = Constants.RobotState.TELEOP;
 
-    teleopClass = new Teleop();
-    teleopClass.init(xmlSettingReader, fileLogger);
+      teleopClass = new Teleop();
+      teleopClass.init(xmlSettingReader, fileLogger);
+    }
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {callPeriodicFunction();}
+  public void teleopPeriodic() {
+    if(runCode) callPeriodicFunction();
+  }
 
   @Override
   public void testInit() {
-    callEndFunction();
-    clearOpModes();
+    if(runCode) {
+      callEndFunction();
+      clearOpModes();
 
-    lastRobotState = Constants.RobotState.TEST;
-    // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
+      lastRobotState = Constants.RobotState.TEST;
+      // Cancels all running commands at the start of test mode.
+      CommandScheduler.getInstance().cancelAll();
 
-    testClass = new Test();
-    testClass.init(xmlSettingReader, fileLogger);
+      testClass = new Test();
+      testClass.init(xmlSettingReader, fileLogger);
+    }
   }
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {callPeriodicFunction();}
+  public void testPeriodic() {
+    if(runCode) callPeriodicFunction();
+  }
 
   private void callEndFunction() {
     switch(lastRobotState) {
