@@ -4,11 +4,17 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.functions.io.FileLogger;
 import frc.robot.functions.io.xmlreader.EntityGroup;
 import frc.robot.functions.io.xmlreader.XMLSettingReader;
+import frc.robot.functions.io.xmlreader.XMLStepReader;
 import frc.robot.library.Constants;
 import frc.robot.library.OpMode;
 
@@ -18,18 +24,19 @@ import java.util.List;
 
 public class Robot extends TimedRobot {
 
-  public boolean runCode = false;
-
   private static OpMode autonomousClass;
   private static OpMode teleopClass;
   private static OpMode testClass;
   private static OpMode disabledClass;
 
-  private static Constants.RobotState lastRobotState = Constants.RobotState.DISABLED;
+  private static Constants.RobotState lastRobotState;
   public static List<EntityGroup> subSystemCallList = new ArrayList<>();
 
-  public static XMLSettingReader xmlSettingReader;
+  public static XMLSettingReader settingReader;
+  public static XMLStepReader stepReader;
   public static FileLogger fileLogger;
+
+  public static NetworkTable configurationNetworkTable;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -37,6 +44,60 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    boolean isSimulation = isSimulation();
+
+    if(Constants.StandardFileAndDirectoryLocations.GenerateAllStandardDirectories(isSimulation)) { //@TODO replace with driver station value
+      System.out.println("Created new Standard Directories for FRC Robot");
+    } else {
+      System.out.println("Using existing Standard Directories");
+    }
+
+    fileLogger = new FileLogger(10, Constants.RobotState.MAIN, Constants.StandardFileAndDirectoryLocations.GenericFileLoggerDir.getFileLocation(isSimulation), isSimulation);
+    fileLogger.writeEvent(0, FileLogger.EventType.Status, "Started FileLogger Continuing with code...");
+
+
+    fileLogger.writeEvent(0, FileLogger.EventType.Status, "Opening Settings XML File...");
+    settingReader = new XMLSettingReader(Constants.StandardFileAndDirectoryLocations.GenericSettings.getFileLocation(isSimulation), true, fileLogger);
+    fileLogger.writeEvent(0, FileLogger.EventType.Status, "Opening Step XML File...");
+    stepReader = new XMLStepReader(Constants.StandardFileAndDirectoryLocations.GenericStepList.getFileLocation(isSimulation), fileLogger);
+
+    configurationNetworkTable = NetworkTableInstance.getDefault().getTable("XMLConfiguration");
+
+    NetworkTable smartDashboard = NetworkTableInstance.getDefault().getTable("SmartDashboard");
+
+    NetworkTableEntry implementChangesEntry = smartDashboard.getEntry("ImplementChanges");
+    implementChangesEntry.addListener((entryNotification) -> {
+      if(entryNotification.getEntry().getBoolean(false)) {
+        settingReader.getRobot().pullFromNetworkTable(configurationNetworkTable);
+
+        settingReader.getRobot().callOnChange();
+        implementChangesEntry.setBoolean(false);
+      }
+    }, EntryListenerFlags.kUpdate);
+
+    NetworkTableEntry flushEntry = smartDashboard.getEntry("FlushConfigurationToXML");
+    flushEntry.addListener((entryNotification) -> {
+      if(entryNotification.getEntry().getBoolean(false)) {
+        settingReader.getRobot().pullFromNetworkTable(configurationNetworkTable);
+        settingReader.getRobot().updateElement();
+        settingReader.write();
+        flushEntry.setBoolean(false);
+      }
+    }, EntryListenerFlags.kUpdate);
+
+    NetworkTableEntry configEntry = smartDashboard.getEntry("EnterConfigurationMode");
+    configEntry.setBoolean(false);
+    configEntry.addListener((entryNotification) -> {
+      if(entryNotification.getEntry().getBoolean(false)) {
+        settingReader.getRobot().addToNetworkTable(configurationNetworkTable);
+        implementChangesEntry.setBoolean(false);
+        flushEntry.setBoolean(false);
+      } else {
+        settingReader.getRobot().removeFromNetworkTable(configurationNetworkTable);
+        implementChangesEntry.delete();
+        flushEntry.delete();
+      }
+    }, EntryListenerFlags.kUpdate);
   }
 
   /**
@@ -58,63 +119,60 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    if(runCode) {
-      callEndFunction();
+      if(lastRobotState != null) callEndFunction();
       clearOpModes();
 
       lastRobotState = Constants.RobotState.DISABLED;
 
       disabledClass = new Disabled();
-      disabledClass.init(xmlSettingReader, fileLogger);
-    }
+      disabledClass.init(settingReader, stepReader, fileLogger);
+
   }
 
   @Override
   public void disabledPeriodic() {
-    if(runCode) callPeriodicFunction();
+    callPeriodicFunction();
   }
 
   @Override
   public void autonomousInit() {
-    if(runCode) {
+
       callEndFunction();
       clearOpModes();
 
       lastRobotState = Constants.RobotState.AUTONOMOUS;
 
       autonomousClass = new Autonomous();
-      autonomousClass.init(xmlSettingReader, fileLogger);
-    }
+      autonomousClass.init(settingReader, stepReader, fileLogger);
+
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    if(runCode) callPeriodicFunction();
+     callPeriodicFunction();
   }
 
   @Override
   public void teleopInit() {
-    if(runCode) {
       callEndFunction();
       clearOpModes();
 
       lastRobotState = Constants.RobotState.TELEOP;
 
       teleopClass = new Teleop();
-      teleopClass.init(xmlSettingReader, fileLogger);
-    }
+      teleopClass.init(settingReader, stepReader, fileLogger);
+
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if(runCode) callPeriodicFunction();
+     callPeriodicFunction();
   }
 
   @Override
   public void testInit() {
-    if(runCode) {
       callEndFunction();
       clearOpModes();
 
@@ -123,14 +181,14 @@ public class Robot extends TimedRobot {
       CommandScheduler.getInstance().cancelAll();
 
       testClass = new Test();
-      testClass.init(xmlSettingReader, fileLogger);
-    }
+      testClass.init(settingReader, stepReader, fileLogger);
+
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    if(runCode) callPeriodicFunction();
+    callPeriodicFunction();
   }
 
   private void callEndFunction() {

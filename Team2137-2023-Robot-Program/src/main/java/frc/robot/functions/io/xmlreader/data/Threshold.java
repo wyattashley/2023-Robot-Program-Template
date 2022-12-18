@@ -65,8 +65,8 @@ public class Threshold extends Entity {
 
 
     @Override
-    public NetworkTable addToNetworkTable(NetworkTable dashboard, boolean mutable) {
-        NetworkTable table = super.addToNetworkTable(dashboard, mutable);
+    public NetworkTable addToNetworkTable(NetworkTable dashboard) {
+        NetworkTable table = super.addToNetworkTable(dashboard);
 
         NetworkTableEntry highEntry = table.getEntry("High");
         highEntry.setNumber(upperValue);
@@ -74,25 +74,27 @@ public class Threshold extends Entity {
         NetworkTableEntry lowEntry = table.getEntry("Low");
         lowEntry.setNumber(lowerValue);
 
-        if(mutable) {
-            highEntry.addListener((entryNotification) -> {
-                setUpperValue(entryNotification.getEntry().getDouble(getUpperValue()));
-            }, EntryListenerFlags.kUpdate);
+        return table;
+    }
 
-            lowEntry.addListener((entryNotification) -> {
-                setLowerValue(entryNotification.getEntry().getDouble(getLowerValue()));
-            }, EntryListenerFlags.kUpdate);
-        }
+    @Override
+    public NetworkTable pullFromNetworkTable(NetworkTable instance) {
+        NetworkTable table = super.pullFromNetworkTable(instance);
+
+        setUpperValue(table.getEntry("High").getDouble(getUpperValue()));
+        setLowerValue(table.getEntry("Low").getDouble(getLowerValue()));
 
         return table;
     }
 
     @Override
-    public void removeFromNetworkTable(NetworkTable instance) {
-        NetworkTable table = instance.getSubTable(getName());
+    public NetworkTable removeFromNetworkTable(NetworkTable instance) {
+        NetworkTable table = super.removeFromNetworkTable(instance);
 
-        table.getEntry("High").removeListener(0);
-        table.getEntry("Low").removeListener(0);
+        table.getEntry("High").delete();
+        table.getEntry("Low").delete();
+
+        return table;
     }
 
     @Override

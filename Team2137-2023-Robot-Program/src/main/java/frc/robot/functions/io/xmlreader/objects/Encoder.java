@@ -95,17 +95,11 @@ public class Encoder extends Entity {
     }
 
     @Override
-    public NetworkTable addToNetworkTable(NetworkTable dashboard, boolean mutable) {
-        NetworkTable table = super.addToNetworkTable(dashboard, mutable);
+    public NetworkTable addToNetworkTable(NetworkTable dashboard) {
+        NetworkTable table = super.addToNetworkTable(dashboard);
 
         NetworkTableEntry entryInverted = table.getEntry("Inverted");
         entryInverted.setBoolean(inverted);
-
-        if(mutable) {
-            entryInverted.addListener((entryNotification) -> {
-                setInverted(entryNotification.getEntry().getBoolean(inverted()));
-            }, EntryListenerFlags.kUpdate);
-        }
 
         //None mutable
         NetworkTableEntry entryType = table.getEntry("Type");
@@ -115,23 +109,32 @@ public class Encoder extends Entity {
         entryID.setDouble(id);
 
         NetworkTableEntry entryOffset = table.getEntry("Offset");
-        entryType.setString(String.valueOf(offset));
-
-        if(mutable) {
-            entryOffset.addListener((entryNotification) -> {
-                setOffset(entryNotification.getEntry().getDouble(getOffset()));
-            }, EntryListenerFlags.kUpdate);
-        }
+        entryOffset.setString(String.valueOf(offset));
 
         return table;
     }
 
     @Override
-    public void removeFromNetworkTable(NetworkTable instance) {
-        NetworkTable table = instance.getSubTable(getName());
+    public NetworkTable pullFromNetworkTable(NetworkTable instance) {
+        NetworkTable table = super.pullFromNetworkTable(instance);
 
-        table.getEntry("Inverted").removeListener(0);
-        table.getEntry("Offset").removeListener(0);
+        //TODO add type
+        setInverted(table.getEntry("Inverted").getBoolean(inverted()));
+        setID((int) table.getEntry("ID").getDouble(id));
+        setOffset(table.getEntry("Offset").getDouble(getOffset()));
+
+        return table;
+    }
+    @Override
+    public NetworkTable removeFromNetworkTable(NetworkTable instance) {
+        NetworkTable table = super.removeFromNetworkTable(instance);
+
+        table.getEntry("Inverted").delete();
+        table.getEntry("ID").delete();
+        table.getEntry("Offset").delete();
+        table.getEntry("Type").delete();
+
+        return table;
     }
 
     @Override

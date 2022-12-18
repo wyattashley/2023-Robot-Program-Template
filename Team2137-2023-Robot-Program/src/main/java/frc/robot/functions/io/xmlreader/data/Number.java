@@ -29,12 +29,21 @@ public class Number extends Entity {
 
     private double value;
 
+    /**
+     * Constructs Number with simple Name and Value but DOES NOT have reference to XML Element
+     * @param name - Name of the number
+     * @param _value - Value of the Number
+     */
     public Number(String name, double _value) {
         super(name);
 
         value = _value;
     }
 
+    /**
+     * Constructs Number with element from XML file and uses the Tag name as the name and Text content as value
+     * @param element - Number element from XML file
+     */
     public Number(Element element) {
         super(element);
 
@@ -45,35 +54,48 @@ public class Number extends Entity {
             value = Double.parseDouble(val);
     }
 
+    /**
+     * Gets the current stored local value
+     * @return - Value of current number
+     */
     public synchronized double getValue() {
         return value;
     }
 
+    /**
+     * Sets the value of the local values but does NOT change network table value or element value
+     * @param value - Value to set current number to
+     */
     public synchronized void setValue(double value) {
         this.value = value;
     }
 
     @Override
-    public NetworkTable addToNetworkTable(NetworkTable dashboard, boolean mutable) {
-        NetworkTable table = super.addToNetworkTable(dashboard, mutable);
+    public NetworkTable addToNetworkTable(NetworkTable dashboard) {
+        NetworkTable table = super.addToNetworkTable(dashboard);
 
         NetworkTableEntry entry = table.getEntry("Value");
-        entry.setNumber(value);
-
-        if(mutable) {
-            entry.addListener((entryNotification) -> {
-                setValue(entryNotification.getEntry().getDouble(getValue()));
-            }, EntryListenerFlags.kUpdate);
-        }
+        entry.setDouble(value);
 
         return table;
     }
 
     @Override
-    public void removeFromNetworkTable(NetworkTable instance) {
-        NetworkTable table = instance.getSubTable(getName());
+    public NetworkTable pullFromNetworkTable(NetworkTable instance) {
+        NetworkTable table = super.pullFromNetworkTable(instance);
 
-        table.getEntry("Value").removeListener(0);
+        setValue(table.getEntry("Value").getDouble(getValue()));
+
+        return table;
+    }
+
+    @Override
+    public NetworkTable removeFromNetworkTable(NetworkTable instance) {
+        NetworkTable table = super.removeFromNetworkTable(instance);
+
+        table.getEntry("Value").delete();
+
+        return table;
     }
 
     @Override

@@ -14,6 +14,7 @@
 
 package frc.robot.functions.io.xmlreader.objects;
 
+import edu.wpi.first.networktables.NetworkTable;
 import frc.robot.functions.io.xmlreader.Entity;
 import org.w3c.dom.Element;
 
@@ -47,5 +48,14 @@ public class Camera extends Entity {
         getSavedElement().getElementsByTagName("ID").item(0).setTextContent(String.valueOf(deviceID));
 
         return getSavedElement();
+    }
+
+    @Override
+    public NetworkTable removeFromNetworkTable(NetworkTable instance) {
+        NetworkTable table = super.removeFromNetworkTable(instance);
+
+        table.getEntry("ID").delete();
+
+        return table;
     }
 }

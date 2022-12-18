@@ -15,35 +15,69 @@
 package frc.robot.functions.io.xmlreader;
 
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import javax.security.auth.callback.Callback;
+import java.util.concurrent.Callable;
 
 public class Entity {
 
     private final String strName;
     private Element savedElement;
     private boolean boolIsHardwareDevice = true;
+    private Runnable OnChangeCallback;
+    private Callable<Boolean> onDestroyCallback;
 
+    /**
+     * Constructs a new Entity with only a name value (Not linked to XML Element)
+     * Usage: Entity is the main type of the XML File and represents any of the elements whether it is hardware or
+     * just a number.
+     * @param name - Name of the Entity
+     */
     public Entity(String name) {
         strName = name;
+        onDestroyCallback = () -> false;
 //        Robot.deviceCallList.put(strName, this);
     }
 
-    public void setHardwareDevice(boolean value) {
-        boolIsHardwareDevice = value;
-    }
-
-    public boolean isHardwareDevice() {
-        return boolIsHardwareDevice;
-    }
-
+    /**
+     * Constructs a new Entity with Element linkage
+     * Usage: Entity is the main type of the XML File and represents any of the elements whether it is hardware or
+     * just a number
+     * @param element
+     */
     public Entity(Element element) {
         this(getNodeOrAttribute(element, "name", null));
 
         savedElement = element;
     }
 
+    /**
+     * Sets the boolean flag on whether this Entity is a hardware device (ie. Motor, Camera)
+     * @param value - True for hardware device and False for everything else
+     */
+    public void setHardwareDevice(boolean value) {
+        boolIsHardwareDevice = value;
+    }
+
+    /**
+     * Gets the boolean flag on whther this Enitity is a hardware device (ie Motor, Camera)
+     * @return - True for hardware device and False for everything else
+     */
+    public boolean isHardwareDevice() {
+        return boolIsHardwareDevice;
+    }
+
+    /**
+     * Safe method that tried to retrieve a string from SubElement with given name
+     * @param element - Element to search
+     * @param name - Name of the SubElement to search for
+     * @param defaultReturn - Default string value to return if it does not exist
+     * @return - Returns String value from XML file or on fail the defaultReturn value
+     */
     protected static String getOrDefault(Element element, String name, String defaultReturn) {
         NodeList childNodes = element.getChildNodes();
         for(int i = 0; i < childNodes.getLength(); i++) {
@@ -66,6 +100,13 @@ public class Entity {
 //            return defaultReturn;
     }
 
+    /**
+     * Safe method that tried to retrieve a string from SubElement with given name set by an attribute
+     * @param element - Element to search
+     * @param name - Name of the SubElement to search for
+     * @param defaultReturn - Default string value to return if it does not exist
+     * @return - Returns String value from XML file or on fail the defaultReturn value
+     */
     protected static String getAttributeOrDefault(Element element, String name, String defaultReturn) {
         String value = element.getAttribute(name);
         if(value.equals(""))
@@ -74,6 +115,13 @@ public class Entity {
             return value;
     }
 
+    /**
+     * Safe method that tried to retrieve a string from SubElement with given name set by a Name Node
+     * @param element - Element to search
+     * @param name - Name of the SubElement to search for
+     * @param defaultReturn - Default string value to return if it does not exist
+     * @return - Returns String value from XML file or on fail the defaultReturn value
+     */
     protected static String getNodeOrAttribute(Element element, String name, String defaultReturn) {
         String capitalizedFirstLetter = String.valueOf(name.charAt(0)).toUpperCase() + name.substring(1).toLowerCase();
 
@@ -88,16 +136,33 @@ public class Entity {
             return defaultReturn;
     }
 
+    /**
+     * Gets the set name of the Entity
+     * @return - If no name is present return "Default"
+     */
     public String getName() {
         if(strName == null)
             return "Default";
         return strName;
     }
 
+    /**
+     * Appends the Entity values into a {@see StringBuilder} and is meant to be Overwritten by Child classes in order
+     * to add more values to the Entity print out (ie. CAN ID for a motor controller)
+     * @param builder - StringBuilder to append values to
+     * @param depth - Current depth (amount of tabs to add)
+     */
     public void constructTreeItemPrintout(StringBuilder builder, int depth) {
         buildStringTabbedData(builder, depth, "Name", getName());
     }
 
+    /**
+     * Write the value of the Entity with correct tabs
+     * @param builder - Builder to append to
+     * @param number - Number of tabs to add
+     * @param title - Title of the value
+     * @param message - Value or message about value
+     */
     public final void buildStringTabbedData(StringBuilder builder, int number, String title, String message) {
         builder.append("\t".repeat(number));
         builder.append(title);
@@ -106,22 +171,110 @@ public class Entity {
         builder.append("\n");
     }
 
-    public NetworkTable addToNetworkTable(NetworkTable instance, boolean mutable) {
+    /**
+     * Gets the callback value for when a value has changed
+     * @return - Runnable callback
+     */
+    public Runnable getOnChangeCallback() {
+        return OnChangeCallback;
+    }
+
+    /**
+     * Registers a callback value to run when the values have changed
+     * @param OnChangeCallback - Runnable object to call
+     */
+    public void setOnChangeCallback(Runnable OnChangeCallback) {
+        this.OnChangeCallback = OnChangeCallback;
+    }
+
+    /**
+     * Calls the OnChange callback registered in the function
+     */
+    public void callOnChange() {
+        if(OnChangeCallback != null)
+            this.OnChangeCallback.run();
+    }
+
+    /**
+     * Gets a callable for the OnDestroy Function
+     * @return - the onDestroy Callable
+     */
+    public Callable<Boolean> getOnDestroyCallback() {
+        return onDestroyCallback;
+    }
+
+    /**
+     * Sets a callable for the OnDestroy Event
+     * @param onDestroyCallback - Callable to destroy Entity
+     */
+    public void setOnDestroyCallback(Callable<Boolean> onDestroyCallback) {
+        this.onDestroyCallback = onDestroyCallback;
+    }
+
+    
+    public boolean onDestroy() throws Exception {
+        return this.onDestroyCallback.call(); //Flag for function that can not destroy themselves
+    }
+
+    /**
+     * Adds this Entity to the Network Tables as a SubTable
+     * @param instance - Parent Network table instance
+     * @return - SubTable instance
+     */
+    public NetworkTable addToNetworkTable(NetworkTable instance) {
         return instance.getSubTable(getName());
     }
 
-    public void removeFromNetworkTable(NetworkTable instance) {
-
+    /**
+     * Gets the value from the Network Table and sets it to the objects
+     * @param instance - Parent Network Table Instance
+     * @return - SubTable instance
+     */
+    public NetworkTable pullFromNetworkTable(NetworkTable instance) {
+        return instance.getSubTable(getName());
     }
 
-    protected NetworkTable addToNetworkTable(String name, NetworkTable instance, boolean mutable) {
+    /**
+     * To be implemented but removes this Entity SubTable in the Network Tables
+     * Child classes should extend this and add all XML values
+     * @param instance - Parent Network table instance
+     */
+    public NetworkTable removeFromNetworkTable(NetworkTable instance) {
+        return instance.getSubTable(getName());
+    }
+
+    /**
+     * To be implemented but removes this Entity SubTable in the Network Tables
+     * Child classes should extend this and add all XML values
+     * @param instance - Parent Network table instance
+     */
+    public NetworkTable removeFromNetworkTable(String name, NetworkTable instance) {
         return instance.getSubTable(name);
     }
 
+    /**
+     * Adds this Entity to the Network Tables as a SubTable with different name value
+     * Child classes should extend this and add all XML values
+     * @param instance - Parent Network table instance
+     * @return - SubTable instance
+     */
+    protected NetworkTable addToNetworkTable(String name, NetworkTable instance) {
+        return instance.getSubTable(name);
+    }
+
+    /**
+     * Returns the linked Element object
+     * @return - Linked Element object
+     */
     protected Element getSavedElement() {
         return savedElement;
     }
 
+    /**
+     * Updates the linked Element's (if present) values to the stored one
+     * Child class should extend this and update all XML values
+     * @return - Returns the linked element
+     */
     public Element updateElement() {
         if (savedElement == null || this.strName == null)
             return getSavedElement();

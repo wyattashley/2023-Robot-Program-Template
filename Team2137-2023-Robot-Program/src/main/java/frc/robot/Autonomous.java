@@ -70,7 +70,7 @@ public class Autonomous implements OpMode {
 
     //region Main Autonomous Opmode Functions
     @Override
-    public void init(XMLSettingReader xmlSettingReader, FileLogger fileLogger) {
+    public void init(XMLSettingReader xmlSettingReader, XMLStepReader xmlStepReader, FileLogger fileLogger) {
         //Create Filelogger object and provide the current OPMODE state and debug
         this.logger = fileLogger;
         this.mSettingReader = xmlSettingReader;

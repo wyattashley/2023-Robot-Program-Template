@@ -66,10 +66,11 @@ public class SwerveFALCONDriveModule extends EntityGroup implements SwerveModule
         this.driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, drive.getCurrentLimit(), drive.getCurrentLimit(), 1));
         this.driveMotor.setNeutralMode(NeutralMode.Brake);
         this.driveMotor.configOpenloopRamp(drive.getRampRate());
-        this.driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0 , 10);
+        this.driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
         dblWheelConversionValue = (Math.PI / 3) / this.mDriveMotorObj.getGearRatio(); //Rotations per Foot (Moves PI/3 feet every rotation of wheel then divde by gear ratio
 
         this.mTurnMotorObj = turn;
+
         // Turning motor setup
         this.turningMotor = new TalonFX(turn.getID());
         this.turningMotor.configFactoryDefault();
@@ -96,12 +97,22 @@ public class SwerveFALCONDriveModule extends EntityGroup implements SwerveModule
     }
 
     @Override
+    public boolean onDestroy() throws Exception {
+        this.driveMotor.DestroyObject();
+        this.turningMotor.DestroyObject();
+        this.encoder.DestroyObject();
+
+        return true;
+    }
+
+    @Override
     public void periodic() {
 
     }
 
     /**
      * getModuleAngle() takes the value from the CANCoder
+     *
      * @return Wheel angle on module
      */
     @Override
@@ -111,6 +122,7 @@ public class SwerveFALCONDriveModule extends EntityGroup implements SwerveModule
 
     /**
      * Assigns a new module goal angle to the PID
+     *
      * @param angle - new angle goal for the wheel
      */
     @Override
@@ -122,24 +134,26 @@ public class SwerveFALCONDriveModule extends EntityGroup implements SwerveModule
 
     /**
      * Sets the raw speed -1~1 to motor and disables Velocity and Distance
+     *
      * @param speed - raw speed value to set
      */
     @Override
     public void setRawDriveSpeed(double speed) {
-        if(this.mDriveControlType != Constants.DriveControlType.RAW)
+        if (this.mDriveControlType != Constants.DriveControlType.RAW)
             this.mDriveControlType = Constants.DriveControlType.RAW;
         driveMotor.set(TalonFXControlMode.PercentOutput, speed);
     }
 
     /**
      * Set the goal velocity value to the PID Controller
+     *
      * @param speed - Speed to set to the drive train
      */
     @Override
     public void setVelocityDriveSpeed(Speed2d speed) {
         this.mDriveVelocityGoal = speed;
 
-        if(this.mDriveControlType != Constants.DriveControlType.VELOCITY) {
+        if (this.mDriveControlType != Constants.DriveControlType.VELOCITY) {
             configDrivetrainControlType(Constants.DriveControlType.VELOCITY);
         }
 
@@ -155,6 +169,7 @@ public class SwerveFALCONDriveModule extends EntityGroup implements SwerveModule
 
     /**
      * Returns the instantaneous velocity of the wheel using integrated motor encoder.
+     *
      * @return - a Speed2d is returned
      */
     @Override
@@ -164,6 +179,7 @@ public class SwerveFALCONDriveModule extends EntityGroup implements SwerveModule
 
     /**
      * Returns the current velocity goal of the drive train
+     *
      * @return current velocity goal
      */
     @Override
@@ -173,6 +189,7 @@ public class SwerveFALCONDriveModule extends EntityGroup implements SwerveModule
 
     /**
      * Return the current distance goal of the drive train
+     *
      * @return current distance goal
      */
     @Override
@@ -182,6 +199,7 @@ public class SwerveFALCONDriveModule extends EntityGroup implements SwerveModule
 
     /**
      * Returns the current wheel position on the robot.
+     *
      * @return Current drive wheel encoder position
      */
     @Override
@@ -191,13 +209,14 @@ public class SwerveFALCONDriveModule extends EntityGroup implements SwerveModule
 
     /**
      * Sets drive train distance goal (Only drive wheel)
+     *
      * @param distance2d - Distance goal for robot drive wheel
      */
     @Override
     public void setDriveDistanceTarget(Distance2d distance2d) {
         this.mDriveDistanceGoal = distance2d;
 
-        if(this.mDriveControlType != Constants.DriveControlType.DISTANCE) {
+        if (this.mDriveControlType != Constants.DriveControlType.DISTANCE) {
             configDrivetrainControlType(Constants.DriveControlType.DISTANCE);
         }
 
@@ -206,6 +225,7 @@ public class SwerveFALCONDriveModule extends EntityGroup implements SwerveModule
 
     /**
      * Dictates weather the drive motor is to power stop
+     *
      * @param brake - True if braking is enabled
      */
     @Override
@@ -215,11 +235,12 @@ public class SwerveFALCONDriveModule extends EntityGroup implements SwerveModule
 
     /**
      * Usage is ONLY for time saving pre enable (Note change is automatic when set velocity or distance is called)
+     *
      * @param control - Desired control type to be used
      */
     @Override
     public void configDrivetrainControlType(Constants.DriveControlType control) {
-        switch(control) {
+        switch (control) {
             case VELOCITY:
                 PID tmpPIDVelocity = this.mDriveMotorObj.getPID(intDriveVelocityPIDSlotID);
                 this.driveMotor.config_kP(0, tmpPIDVelocity.getP());

@@ -28,13 +28,13 @@ public class Motor extends Entity {
 
     public static final int NUMBEROFPIDSLOTS = 2;
 
-    private MotorTypes type;
-    private boolean inverted;
-    private int currentLimit;
-    private double gearRatio;
-    private double rampRate;
-    private PID[] pidValues;
-    private int id;
+    private MotorTypes type = MotorTypes.NEO;
+    private boolean inverted = false;
+    private int currentLimit = 0;
+    private double gearRatio = 0;
+    private double rampRate = 0;
+    private PID[] pidValues = new PID[NUMBEROFPIDSLOTS];
+    private int id = 0;
 
     /**
      * Create a new Motor Object for debug and better storage
@@ -71,7 +71,6 @@ public class Motor extends Entity {
         this.id = Integer.parseInt(getOrDefault(element, "ID", "0"));
 
         NodeList tmpList = element.getElementsByTagName("PID");
-        pidValues = new PID[NUMBEROFPIDSLOTS];
 
         for (int i = 0; i < tmpList.getLength(); i++) {
             String value = ((Element) tmpList.item(i)).getAttribute("Slot");
@@ -169,55 +168,35 @@ public class Motor extends Entity {
         getSavedElement().getElementsByTagName("CurrentLimit").item(0).setTextContent(String.valueOf(currentLimit));
         getSavedElement().getElementsByTagName("RampRate").item(0).setTextContent(String.valueOf(rampRate));
 
-        for (PID pid : pidValues)
-            pid.updateElement();
+        //TODO readdPID
+//        for (PID pid : pidValues) {
+//            if(pid != null) pid.updateElement();
+//        }
 
         return getSavedElement();
     }
 
 
     @Override
-    public NetworkTable addToNetworkTable(NetworkTable dashboard, boolean mutable) {
-        NetworkTable table = super.addToNetworkTable(dashboard, mutable);
+    public NetworkTable addToNetworkTable(NetworkTable dashboard) {
+        NetworkTable table = super.addToNetworkTable(dashboard);
 
-        for (PID pid : pidValues)
-            pid.addToNetworkTable(dashboard, mutable);
+        //TODO readdPID
+//        for (PID pid : pidValues) {
+//            if(pid != null) pid.addToNetworkTable(dashboard);
+//        }
 
         NetworkTableEntry entryGearRatio = table.getEntry("GearRatio");
         entryGearRatio.setDouble(gearRatio);
 
-        if(mutable) {
-            entryGearRatio.addListener((entryNotification) -> {
-                setRampRate(entryNotification.getEntry().getDouble(gearRatio));
-            }, EntryListenerFlags.kUpdate);
-        }
-
         NetworkTableEntry entryRampRate = table.getEntry("RampRate");
         entryRampRate.setDouble(rampRate);
-
-        if(mutable) {
-            entryRampRate.addListener((entryNotification) -> {
-                setRampRate(entryNotification.getEntry().getDouble(rampRate));
-            }, EntryListenerFlags.kUpdate);
-        }
 
         NetworkTableEntry entryCurrentLimit = table.getEntry("CurrentLimit");
         entryCurrentLimit.setDouble(currentLimit);
 
-        if(mutable) {
-            entryCurrentLimit.addListener((entryNotification) -> {
-                setCurrentLimit((int) entryNotification.getEntry().getDouble(currentLimit));
-            }, EntryListenerFlags.kUpdate);
-        }
-
         NetworkTableEntry entryInverted = table.getEntry("Inverted");
         entryInverted.setBoolean(inverted);
-
-        if(mutable) {
-            entryInverted.addListener((entryNotification) -> {
-                setInverted(entryNotification.getEntry().getBoolean(inverted()));
-            }, EntryListenerFlags.kUpdate);
-        }
 
         //None mutable
         NetworkTableEntry entryType = table.getEntry("Type");
@@ -230,13 +209,30 @@ public class Motor extends Entity {
     }
 
     @Override
-    public void removeFromNetworkTable(NetworkTable instance) {
-        NetworkTable table = instance.getSubTable(getName());
+    public NetworkTable pullFromNetworkTable(NetworkTable instance) {
+        NetworkTable table = super.pullFromNetworkTable(instance);
 
-        table.getEntry("Inverted").removeListener(0);
-        table.getEntry("CurrentLimit").removeListener(0);
-        table.getEntry("RampRate").removeListener(0);
-        table.getEntry("GearRatio").removeListener(0);
+        //TODO add type
+        setInverted(table.getEntry("Inverted").getBoolean(inverted()));
+        setID((int) table.getEntry("ID").getDouble(id));
+        setCurrentLimit((int) table.getEntry("CurrentLimit").getDouble(getCurrentLimit())); //TODO convert current limit to double
+        setRampRate(table.getEntry("RampRate").getDouble(getRampRate()));
+        setGearRatio(table.getEntry("GearRatio").getDouble(getGearRatio()));
+
+        return table;
+    }
+    @Override
+    public NetworkTable removeFromNetworkTable(NetworkTable instance) {
+        NetworkTable table = super.removeFromNetworkTable(instance);
+
+        table.getEntry("Inverted").delete();
+        table.getEntry("ID").delete();
+        table.getEntry("CurrentLimit").delete();
+        table.getEntry("RampRate").delete();
+        table.getEntry("GearRatio").delete();
+        table.getEntry("Type").delete();
+
+        return table;
     }
 
     public enum MotorClass {

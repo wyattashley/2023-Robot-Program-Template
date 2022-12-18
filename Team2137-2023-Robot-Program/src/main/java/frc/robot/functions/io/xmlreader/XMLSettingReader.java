@@ -27,10 +27,12 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
+import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class XMLSettingReader {
 
@@ -38,6 +40,7 @@ public class XMLSettingReader {
     private final File settingFile;
     private EntityGroup robotEntityGroup;
     private FileLogger log;
+    private int maxSettingsFileHistory = 8;
 
     public XMLSettingReader(String dir, FileLogger logger) {
         this(dir, false, logger);
@@ -85,6 +88,15 @@ public class XMLSettingReader {
 
         robotEntityGroup.updateElement();
         try {
+            String dateString = DateTimeFormatter.ofPattern("MMdd_HHmmss_SSS").format(LocalDateTime.now());
+
+            String name = this.settingFile.getName();
+            name = name.substring(0, name.length() - 4);
+            String dir = this.settingFile.getParentFile().getAbsolutePath();
+
+            Files.copy(this.settingFile.toPath(), (new File(dir + "\\" + name + dateString + ".xml")).toPath());
+            removeUnusedFiles(dir, name);
+
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "no");
@@ -94,6 +106,27 @@ public class XMLSettingReader {
             transformer.transform(source, file);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void removeUnusedFiles(String dir, String fileName) {
+        File directory = new File(dir);
+
+        File[] files = directory.listFiles((a) -> {
+            String name = a.getName();
+            return name.contains(fileName);
+        });
+
+        if (files == null) return;
+
+        Arrays.sort(files, Comparator.comparing(File::lastModified).reversed());
+
+        if (files.length > maxSettingsFileHistory) {
+            log.writeEvent(0, FileLogger.EventType.Status, "Cleaning old setting files...");
+
+            for (int i = maxSettingsFileHistory; i < files.length; i++) {
+                files[i].delete();
+            }
         }
     }
 

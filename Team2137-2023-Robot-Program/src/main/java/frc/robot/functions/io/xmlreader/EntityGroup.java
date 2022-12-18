@@ -357,18 +357,88 @@ public class EntityGroup extends Entity {
     }
 
     @Override
-    public NetworkTable addToNetworkTable(NetworkTable instance, boolean mutable) {
+    public NetworkTable addToNetworkTable(NetworkTable instance) {
         NetworkTable subInstance;
         if(getName().equalsIgnoreCase("Default"))
-            subInstance = super.addToNetworkTable(getGroupType(), instance, mutable);
+            subInstance = super.addToNetworkTable(getGroupType(), instance);
         else
-            subInstance = super.addToNetworkTable(instance, mutable);
+            subInstance = super.addToNetworkTable(instance);
 
-        hardwareEntities.forEach((a, b) -> b.addToNetworkTable(subInstance, mutable));
-        settingsEntities.forEach((a, b) -> b.addToNetworkTable(subInstance, mutable));
-        childSubsystem.forEach((a, b) -> b.addToNetworkTable(subInstance, mutable));
+        hardwareEntities.forEach((a, b) -> b.addToNetworkTable(subInstance));
+        settingsEntities.forEach((a, b) -> b.addToNetworkTable(subInstance));
+        childSubsystem.forEach((a, b) -> b.addToNetworkTable(subInstance));
 
         return subInstance;
+    }
+
+    @Override
+    public NetworkTable removeFromNetworkTable(NetworkTable instance) {
+        NetworkTable subInstance;
+        if(getName().equalsIgnoreCase("Default"))
+            subInstance = super.removeFromNetworkTable(getGroupType(), instance);
+        else
+            subInstance = super.removeFromNetworkTable(instance);
+
+        hardwareEntities.forEach((a, b) -> b.removeFromNetworkTable(subInstance));
+        settingsEntities.forEach((a, b) -> b.removeFromNetworkTable(subInstance));
+        childSubsystem.forEach((a, b) -> b.removeFromNetworkTable(subInstance));
+
+        return subInstance;
+    }
+
+    @Override
+    public NetworkTable pullFromNetworkTable(NetworkTable instance) {
+        NetworkTable subInstance;
+        if(getName().equalsIgnoreCase("Default"))
+            subInstance = super.removeFromNetworkTable(getGroupType(), instance);
+        else
+            subInstance = super.removeFromNetworkTable(instance);
+
+        hardwareEntities.forEach((a, b) -> b.pullFromNetworkTable(subInstance));
+        settingsEntities.forEach((a, b) -> b.pullFromNetworkTable(subInstance));
+        childSubsystem.forEach((a, b) -> b.pullFromNetworkTable(subInstance));
+
+        return subInstance;
+    }
+
+    @Override
+    public void callOnChange() {
+        hardwareEntities.forEach((a, b) -> b.callOnChange());
+        settingsEntities.forEach((a, b) -> b.callOnChange());
+        childSubsystem.forEach((a, b) -> b.callOnChange());
+    }
+
+    @Override
+    public boolean onDestroy() throws Exception {
+        var ref = new Object() {
+            boolean flag = true;
+        };
+
+        hardwareEntities.forEach((a, b) ->  {
+            try {
+                ref.flag = ref.flag && b.onDestroy();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        settingsEntities.forEach((a, b) -> {
+            try {
+                ref.flag = ref.flag && b.onDestroy();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        childSubsystem.forEach((a, b) -> {
+            try {
+                ref.flag = ref.flag && b.onDestroy();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        ref.flag = ref.flag && super.onDestroy();
+
+        return ref.flag;
     }
 
     @Override

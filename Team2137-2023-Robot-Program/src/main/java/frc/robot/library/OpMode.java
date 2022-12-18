@@ -16,13 +16,14 @@ package frc.robot.library;
 
 import frc.robot.functions.io.FileLogger;
 import frc.robot.functions.io.xmlreader.XMLSettingReader;
+import frc.robot.functions.io.xmlreader.XMLStepReader;
 
 public interface OpMode {
 
     /**
      * Runs once when the robot state changed.
      */
-    void init(XMLSettingReader xmlSettingReader, FileLogger fileLogger);
+    void init(XMLSettingReader xmlSettingReader, XMLStepReader xmlStepReader, FileLogger fileLogger);
 
     /**
      * Repeats until robot state is changed.

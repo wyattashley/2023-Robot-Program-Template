@@ -14,8 +14,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.functions.io.FileLogger;
 import frc.robot.functions.io.xmlreader.XMLSettingReader;
+import frc.robot.functions.io.xmlreader.XMLStepReader;
 import frc.robot.library.Constants;
 import frc.robot.library.OpMode;
 
@@ -25,13 +31,20 @@ public class Disabled implements OpMode {
     private final int mintDebug = 0;
 
     @Override
-    public void init(XMLSettingReader xmlSettingReader, FileLogger fileLogger) {
+    public void init(XMLSettingReader xmlSettingReader, XMLStepReader xmlStepReader, FileLogger fileLogger) {
 //        this.logger = new FileLogger(mintDebug, Constants.RobotState.DISABLED);
+        xmlSettingReader.getRobot().getEntityGroupByType("DriveTrain").getHardwareEntity("Pigeon").setOnChangeCallback(() -> {
+            System.out.println("Pigeon Call Back Enabled");
+        });
+
+        xmlSettingReader.getRobot().getEntityGroupByType("DriveTrain").getHardwareEntity("Pigeon").setOnDestroyCallback(() -> {
+            System.out.println("Pigeon Destroy Call Back Enabled");
+            return false;
+        });
     }
 
     @Override
     public void periodic() {
-
     }
 
     @Override

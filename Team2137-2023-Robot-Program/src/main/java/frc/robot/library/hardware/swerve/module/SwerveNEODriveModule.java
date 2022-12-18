@@ -106,6 +106,15 @@ public class SwerveNEODriveModule extends EntityGroup implements SwerveModule {
 
     }
 
+    @Override
+    public boolean onDestroy() throws Exception {
+        this.mDriveMotor.close();
+        this.mTurnMotor.close();
+        this.mTurnEncoder.DestroyObject();
+
+        return true;
+    }
+
     /**
      * Periodic for NEO Type Module does not need anything in the periodic
      */

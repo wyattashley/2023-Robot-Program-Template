@@ -1,0 +1,43 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler"
+    }
+  },
+  "NetworkTables": {
+    "Robot": {
+      "Robot": {
+        "2021 Intake": {
+          "Intake Motor": {
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      },
+      "open": true
+    },
+    "SmartDashboard": {
+      "open": true
+    },
+    "Test": {
+      "open": true
+    },
+    "XMLConfiguration": {
+      "Robot": {
+        "2021 Intake": {
+          "Intake Motor": {
+            "open": true
+          },
+          "open": true
+        },
+        "Swerve Falcon": {
+          "open": true
+        },
+        "open": true
+      },
+      "open": true
+    }
+  }
+}

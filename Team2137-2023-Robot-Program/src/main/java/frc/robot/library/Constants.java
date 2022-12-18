@@ -14,7 +14,6 @@
 
 package frc.robot.library;
 
-//import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.functions.io.xmlreader.objects.Motor;
 import frc.robot.library.units.Distance2d;
@@ -24,6 +23,7 @@ import java.io.File;
 
 public final class Constants {
 
+    //region File Locations
     public enum StandardFileAndDirectoryLocations {
         GenericSettings("Settings.xml"),
         GenericStepList("Steps.xml"),
@@ -45,7 +45,7 @@ public final class Constants {
 
         //Uses current users home location (for windows C:/Users/Wyatt)
         public static final String xmlDesktopFileLocation = System.getProperty("user.home") + "\\FRC_ROBOT_FILES\\";
-        public static final String xmlRoboRioFileLocation = "";
+        public static final String xmlRoboRioFileLocation = System.getProperty("user.home") + "\\FRC_ROBOT_FILES\\";
 
         StandardFileAndDirectoryLocations(String location) {
             loc = location;
@@ -94,6 +94,7 @@ public final class Constants {
             return GenerateBaseXMLDirectories(simulation) | GenerateBaseFileLoggerDirectories(simulation);
         }
     }
+    //endregion
 
     public enum RobotState {
         AUTONOMOUS("Auto"),

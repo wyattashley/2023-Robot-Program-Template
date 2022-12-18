@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.functions.io.FileLogger;
 import frc.robot.functions.io.xmlreader.EntityGroup;
 import frc.robot.functions.io.xmlreader.XMLSettingReader;
+import frc.robot.functions.io.xmlreader.XMLStepReader;
 import frc.robot.library.*;
 import frc.robot.library.hardware.DriveTrain;
 import frc.robot.library.hardware.Gamepad;
@@ -41,7 +42,7 @@ public class Teleop implements OpMode {
     private final Gamepad mOperatorController = new Gamepad(1);
 
     @Override
-    public void init(XMLSettingReader xmlSettingReader, FileLogger fileLogger) {
+    public void init(XMLSettingReader xmlSettingReader, XMLStepReader xmlStepReader, FileLogger fileLogger) {
         this.logger = fileLogger;
 
         this.mSettingReader = xmlSettingReader;

@@ -16,6 +16,7 @@ package frc.robot;
 
 import frc.robot.functions.io.FileLogger;
 import frc.robot.functions.io.xmlreader.XMLSettingReader;
+import frc.robot.functions.io.xmlreader.XMLStepReader;
 import frc.robot.library.Constants;
 import frc.robot.library.OpMode;
 
@@ -25,7 +26,7 @@ public class Test implements OpMode {
     private final int mintDebug = 0;
 
     @Override
-    public void init(XMLSettingReader xmlSettingReader, FileLogger fileLogger) {
+    public void init(XMLSettingReader xmlSettingReader, XMLStepReader xmlStepReader, FileLogger fileLogger) {
 //        this.logger = new FileLogger(mintDebug, Constants.RobotState.TEST);
     }
 
