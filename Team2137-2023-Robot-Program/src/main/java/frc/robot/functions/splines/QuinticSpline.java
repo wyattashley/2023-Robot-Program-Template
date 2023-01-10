@@ -27,6 +27,21 @@ import java.util.List;
 
 import static frc.robot.functions.splines.Spline.parameterizeSpline;
 
+/*
+This is a Java class that implements a quintic spline, a type of spline that uses fifth-degree polyn
+omials to interpolate between waypoints. The class takes in a list of waypoints (represented as Pose
+2d or Translation2d objects), and a horizontal scaling factor.
+It starts by calculating the Hermite basis matrix, which is a matrix used to convert control points 
+to coefficients of a polynomial. Then, for each pair of consecutive waypoints, it creates a ControlV
+ectorPair object, which contains the control points for the x and y components of the spline. It the
+n uses the Hermite basis matrix to calculate the coefficients of the polynomials for the x and y com
+ponents, and creates a Spline object for that segment of the path. Finally, it stores all of these S
+pline objects in a list, so that the whole path can be represented by the collection of individual s
+pline segments.
+The QuinticSpline class provides a way to generate smooth, continuous trajectories between waypoints
+, which can be used to control the movement of a robot along a desired path. The class could be used
+as a part of a control system for a robot, for example in autonomous navigation.
+*/
 public class QuinticSpline {
     private SimpleMatrix hermiteBasisMatrix;
     private List<Spline> splines = new ArrayList<Spline>();
