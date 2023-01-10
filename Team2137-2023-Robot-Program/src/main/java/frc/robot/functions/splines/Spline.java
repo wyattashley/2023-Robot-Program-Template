@@ -22,7 +22,23 @@ import org.ejml.simple.SimpleMatrix;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/*
+This class represents a spline, which is a smooth curve that can be used to interpolate between a se
+t of points. It has a degree, which is 5 in this implementation, and a set of coefficients, which de
+scribe the shape of the curve. The spline can be evaluated at any point to get the corresponding pos
+ition and curvature of the curve at that point.
+The class includes one method called getPoint(double t) , it takes a parameter t between 0 and 1, it
+calculates the x and y position at that point on the curve using the coefficients and the polynomia
+l bases of the degree of the spline.
+The class also includes a method called parameterizeSpline(Spline spline, double t0, double t1, doub
+le kMaxDy, double kMaxDx, double kMaxDTheata, double kMaxIterations) . This method takes a spline an
+d a range of values between t0 and t1, along with other parameters related to the maximum curvature,
+maximum x and y position and maximum angle and maximum number of iterations. It finds all the point
+s on the spline within the range and stores them in an array.
+The main use of the class is to generate smooth, continuous trajectories between waypoints, which ca
+n be used to control the movement of a robot along a desired path. It could be used as a part of a c
+ontrol system for a robot, for example in autonomous navigation.
+*/
 public class Spline {
     private int m_degree;
     private SimpleMatrix coefficients;
